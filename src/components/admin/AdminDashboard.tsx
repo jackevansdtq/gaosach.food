@@ -267,17 +267,17 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 <h3 className="text-xl font-bold text-gray-900 mb-4">Phân loại sản phẩm</h3>
                 <div className="space-y-4">
                   {[
-                    'ST25 Thơm 5kg',
-                    'ST25 Cao Cấp 10kg',
-                    'ST25 Đặc Biệt 2kg',
-                    'ST25 Gia Đình 20kg',
-                  ].map((type) => {
-                    const count = getRiceTypeCount(type);
+                    { db: 'ST25 Thơm 5kg', label: 'Gạo nguyên cám 100%' },
+                    { db: 'ST25 Cao Cấp 10kg', label: 'Gạo giữ cám 50%' },
+                    { db: 'ST25 Đặc Biệt 2kg', label: 'Gạo trắng tinh 0%' },
+                    { db: 'ST25 Gia Đình 20kg', label: 'Gạo đặc biệt (đang triển khai)' },
+                  ].map(({ db, label }) => {
+                    const count = getRiceTypeCount(db);
                     const percentage = stats.total > 0 ? (count / stats.total) * 100 : 0;
                     return (
-                      <div key={type} className="space-y-2">
+                      <div key={db} className="space-y-2">
                         <div className="flex justify-between text-sm">
-                          <span className="text-gray-700">{type}</span>
+                          <span className="text-gray-700">{label}</span>
                           <span className="font-semibold text-green-600">
                             {count} ({percentage.toFixed(1)}%)
                           </span>
@@ -307,8 +307,12 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                         <p className="text-sm font-semibold text-gray-900 truncate">{reg.name}</p>
                         <p className="text-xs text-gray-600">{new Date(reg.created_at).toLocaleString('vi-VN')}</p>
                       </div>
-                      <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
-                        {reg.rice_type.split(' ')[1]}kg
+                      <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full truncate max-w-[120px]">
+                        {reg.rice_type === 'ST25 Thơm 5kg' ? 'Nguyên cám' :
+                         reg.rice_type === 'ST25 Cao Cấp 10kg' ? 'Giữ cám' :
+                         reg.rice_type === 'ST25 Đặc Biệt 2kg' ? 'Trắng tinh' :
+                         reg.rice_type === 'ST25 Gia Đình 20kg' ? 'Đặc biệt' :
+                         reg.rice_type}
                       </span>
                     </div>
                   ))}
@@ -404,14 +408,18 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                               onChange={(e) => setEditData({ ...editData, rice_type: e.target.value })}
                               className="w-full px-2 py-1 border border-green-300 rounded text-sm"
                             >
-                              <option value="ST25 Thơm 5kg">ST25 Thơm 5kg</option>
-                              <option value="ST25 Cao Cấp 10kg">ST25 Cao Cấp 10kg</option>
-                              <option value="ST25 Đặc Biệt 2kg">ST25 Đặc Biệt 2kg</option>
-                              <option value="ST25 Gia Đình 20kg">ST25 Gia Đình 20kg</option>
+                              <option value="ST25 Thơm 5kg">Gạo nguyên cám 100%</option>
+                              <option value="ST25 Cao Cấp 10kg">Gạo giữ cám 50%</option>
+                              <option value="ST25 Đặc Biệt 2kg">Gạo trắng tinh 0%</option>
+                              <option value="ST25 Gia Đình 20kg">Gạo đặc biệt (đang triển khai)</option>
                             </select>
                           ) : (
                             <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
-                              {reg.rice_type}
+                              {reg.rice_type === 'ST25 Thơm 5kg' ? 'Gạo nguyên cám 100%' :
+                               reg.rice_type === 'ST25 Cao Cấp 10kg' ? 'Gạo giữ cám 50%' :
+                               reg.rice_type === 'ST25 Đặc Biệt 2kg' ? 'Gạo trắng tinh 0%' :
+                               reg.rice_type === 'ST25 Gia Đình 20kg' ? 'Gạo đặc biệt (đang triển khai)' :
+                               reg.rice_type}
                             </span>
                           )}
                         </td>
@@ -543,7 +551,13 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                       </div>
                       <div>
                         <p className="text-sm text-gray-600 mb-1">Sản phẩm</p>
-                        <p className="font-semibold text-green-700">{reg.rice_type}</p>
+                        <p className="font-semibold text-green-700">
+                          {reg.rice_type === 'ST25 Thơm 5kg' ? 'Gạo nguyên cám 100%' :
+                           reg.rice_type === 'ST25 Cao Cấp 10kg' ? 'Gạo giữ cám 50%' :
+                           reg.rice_type === 'ST25 Đặc Biệt 2kg' ? 'Gạo trắng tinh 0%' :
+                           reg.rice_type === 'ST25 Gia Đình 20kg' ? 'Gạo đặc biệt (đang triển khai)' :
+                           reg.rice_type}
+                        </p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-600 mb-1">Tiêu thụ</p>
