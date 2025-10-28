@@ -108,16 +108,14 @@ const ProductsSection = forwardRef<HTMLElement, ProductsSectionProps>(({ isVisib
                 </div>
 
                 {/* Progress Bar */}
-                {product.percentage < 100 && (
-                  <div className="mb-4">
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full ${getProgressColor(product.percentage)} transition-all duration-500`}
-                        style={{ width: `${product.percentage}%` }}
-                      />
-                    </div>
+                <div className="mb-4">
+                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full ${getProgressColor(product.percentage)} transition-all duration-500`}
+                      style={{ width: `${product.percentage}%` }}
+                    />
                   </div>
-                )}
+                </div>
 
                 <p className="text-gray-600 mb-6 text-sm leading-relaxed">
                   {product.description}
