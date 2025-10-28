@@ -99,6 +99,104 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
     totalSupport: registrations.filter((r) => r.project_support && r.project_support.trim() !== '').length,
   };
 
+  const currencyFormatter = new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+    currencyDisplay: 'code',
+    maximumFractionDigits: 0,
+  });
+
+  const numberFormatter = new Intl.NumberFormat('vi-VN');
+
+  const formatCurrency = (value: number) =>
+    currencyFormatter
+      .format(value)
+      .replace(/\s*VND$/, ' VND');
+
+  const formatNumber = (value: number) => numberFormatter.format(value);
+
+  const parseSupportValue = (value?: string | null) => {
+    if (!value) return 0;
+    const numeric = value.toString().replace(/[^0-9]/g, '');
+    const parsed = parseInt(numeric, 10);
+    return Number.isNaN(parsed) ? 0 : parsed;
+  };
+
+  const parseConsumptionValue = (value?: string | number | null) => {
+    if (value == null) return 0;
+    if (typeof value === 'number') return value;
+    const rangeMatch = value.match(/(\d+)\s*-\s*(\d+)/);
+    if (rangeMatch) {
+      const start = parseInt(rangeMatch[1], 10);
+      const end = parseInt(rangeMatch[2], 10);
+      return Math.round((start + end) / 2);
+    }
+    const aboveMatch = value.match(/trên\s*(\d+)/i);
+    if (aboveMatch) return parseInt(aboveMatch[1], 10);
+    const digitsMatch = value.match(/\d+/);
+    if (digitsMatch) return parseInt(digitsMatch[0], 10);
+    return 0;
+  };
+
+  const determineConsumptionBucket = (value?: string | number | null) => {
+    const text = (value ?? '').toString().toLowerCase();
+    if (text.includes('trên 30')) return '30+';
+    if (text.includes('20-30')) return '20-30';
+    if (text.includes('10-20')) return '10-20';
+    if (text.includes('5-10')) return '5-10';
+    const numeric = parseConsumptionValue(value);
+    if (numeric >= 30) return '30+';
+    if (numeric >= 20) return '20-30';
+    if (numeric >= 10) return '10-20';
+    if (numeric >= 5) return '5-10';
+    return 'other';
+  };
+
+  const consumptionBuckets = [
+    { key: '5-10', label: '5-10kg (Gia đình nhỏ)' },
+    { key: '10-20', label: '10-20kg (Gia đình trung bình)' },
+    { key: '20-30', label: '20-30kg (Gia đình đông người)' },
+    { key: '30+', label: 'Trên 30kg (Nhu cầu lớn)' },
+    { key: 'other', label: 'Khác / chưa xác định' },
+  ];
+
+  const consumptionAnalytics = consumptionBuckets
+    .map((bucket) => {
+      const bucketRegistrations = registrations.filter(
+        (reg) => determineConsumptionBucket(reg.monthly_consumption) === bucket.key
+      );
+      const supportValue = bucketRegistrations.reduce(
+        (sum, reg) => sum + parseSupportValue(reg.project_support),
+        0
+      );
+      const consumptionValue = bucketRegistrations.reduce(
+        (sum, reg) => sum + parseConsumptionValue(reg.monthly_consumption),
+        0
+      );
+      return {
+        ...bucket,
+        count: bucketRegistrations.length,
+        supportValue,
+        consumptionValue,
+      };
+    })
+    .filter((bucket) => bucket.count > 0 || bucket.supportValue > 0);
+
+  const totalSupportAmount = consumptionAnalytics.reduce(
+    (sum, bucket) => sum + bucket.supportValue,
+    0
+  );
+
+  const maxSupportValue = consumptionAnalytics.reduce(
+    (max, bucket) => (bucket.supportValue > max ? bucket.supportValue : max),
+    0
+  );
+
+  const maxCountValue = consumptionAnalytics.reduce(
+    (max, bucket) => (bucket.count > max ? bucket.count : max),
+    0
+  );
+
   const exportToCSV = () => {
     const headers = ['STT', 'Họ tên', 'SĐT', 'Địa chỉ', 'Loại gạo', 'Tiêu thụ/tháng', 'Đóng góp', 'Ngày đăng ký'];
     const rows = registrations.map((r, index) => [
@@ -170,6 +268,67 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                   <p className="text-green-100 mt-1">Quản lý thông minh - Gạo ST25 Premium</p>
                 </div>
               </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-emerald-500/5 via-white to-cyan-50 border border-emerald-100 rounded-3xl shadow-2xl p-8">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6">
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900">Tổng quan tiêu thụ &amp; đóng góp</h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Phân nhóm theo lượng tiêu thụ hàng tháng và tổng đóng góp tương ứng.
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs uppercase tracking-wider text-emerald-600 font-semibold mb-1">Tổng đóng góp</p>
+                  <p className="text-2xl font-black text-emerald-700">
+                    {totalSupportAmount > 0 ? formatCurrency(totalSupportAmount) : '0 VND'}
+                  </p>
+                </div>
+              </div>
+
+              {consumptionAnalytics.length === 0 ? (
+                <div className="py-12 text-center text-gray-500 bg-white/70 rounded-2xl border border-dashed border-emerald-200">
+                  Chưa có dữ liệu để hiển thị biểu đồ.
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {consumptionAnalytics.map((bucket) => {
+                    const supportRatio = maxSupportValue > 0 ? bucket.supportValue / maxSupportValue : 0;
+                    const countRatio = maxCountValue > 0 ? bucket.count / maxCountValue : 0;
+                    const widthPercent = Math.min(
+                      100,
+                      Math.max(supportRatio, countRatio, bucket.count > 0 ? 0.12 : 0.06) * 100
+                    );
+
+                    return (
+                      <div
+                        key={bucket.key}
+                        className="bg-white/80 backdrop-blur-sm rounded-2xl border border-emerald-50 shadow-sm p-5 flex flex-col gap-4"
+                      >
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                          <div>
+                            <p className="text-base font-bold text-slate-900">{bucket.label}</p>
+                            <p className="text-sm text-slate-500">
+                              {bucket.count} đăng ký • ~{formatNumber(bucket.consumptionValue)} kg/tháng
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className="px-4 py-1.5 bg-amber-100 text-amber-700 rounded-full font-semibold shadow-sm">
+                              {bucket.supportValue > 0 ? formatCurrency(bucket.supportValue) : '0 VND'}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden shadow-inner">
+                          <div
+                            className="h-full bg-gradient-to-r from-emerald-500 via-lime-400 to-amber-400 transition-all duration-700"
+                            style={{ width: `${widthPercent}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
             <button
               onClick={onLogout}
