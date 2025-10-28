@@ -165,30 +165,6 @@ const ProductsSection = forwardRef<HTMLElement, ProductsSectionProps>(({ isVisib
           ))}
         </div>
 
-        {/* Summary */}
-        {selectedProduct && (
-          <div
-            className={`mt-16 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl p-8 text-white text-center transition-all duration-1000 delay-700 ${
-              isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-            }`}
-          >
-            <h3 className="text-2xl font-bold mb-4">Bạn đã chọn</h3>
-            <div className="flex items-center justify-center space-x-4">
-              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
-                <div className="font-bold text-2xl">{selectedProduct}</div>
-                <div className="text-sm mt-1">Loại gạo</div>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
-                <div className="font-bold text-2xl">{quantity}</div>
-                <div className="text-sm mt-1">Kilogram</div>
-              </div>
-            </div>
-            <p className="mt-4 text-lg opacity-90">
-              Cuộn xuống để điền thông tin đăng ký
-            </p>
-          </div>
-        )}
-
         <div
           className={`mt-16 text-center transition-all duration-1000 delay-700 ${
             isVisible ? 'opacity-100' : 'opacity-0'
