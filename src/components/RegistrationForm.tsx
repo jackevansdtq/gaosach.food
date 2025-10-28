@@ -161,7 +161,6 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
                 <option value="ST25 Thơm 5kg">Gạo nguyên cám 100%</option>
                 <option value="ST25 Cao Cấp 10kg">Gạo giữ cám 50%</option>
                 <option value="ST25 Đặc Biệt 2kg">Gạo trắng tinh 30%</option>
-                <option value="ST25 Gia Đình 20kg">Gạo đặc biệt(đang triển khai)</option>
               </select>
             </div>
 

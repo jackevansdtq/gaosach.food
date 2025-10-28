@@ -298,7 +298,6 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                     { db: 'ST25 Thơm 5kg', label: 'Gạo nguyên cám 100%' },
                     { db: 'ST25 Cao Cấp 10kg', label: 'Gạo giữ cám 50%' },
                     { db: 'ST25 Đặc Biệt 2kg', label: 'Gạo trắng tinh 0%' },
-                    { db: 'ST25 Gia Đình 20kg', label: 'Gạo đặc biệt (đang triển khai)' },
                   ].map(({ db, label }) => {
                     const count = getRiceTypeCount(db);
                     const percentage = stats.total > 0 ? (count / stats.total) * 100 : 0;
@@ -352,7 +351,6 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                         {reg.rice_type === 'ST25 Thơm 5kg' ? 'Nguyên cám' :
                          reg.rice_type === 'ST25 Cao Cấp 10kg' ? 'Giữ cám' :
                          reg.rice_type === 'ST25 Đặc Biệt 2kg' ? 'Trắng tinh' :
-                         reg.rice_type === 'ST25 Gia Đình 20kg' ? 'Đặc biệt' :
                          reg.rice_type}
                       </span>
                     </div>
@@ -460,14 +458,12 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                               <option value="ST25 Thơm 5kg">Gạo nguyên cám 100%</option>
                               <option value="ST25 Cao Cấp 10kg">Gạo giữ cám 50%</option>
                               <option value="ST25 Đặc Biệt 2kg">Gạo trắng tinh 0%</option>
-                              <option value="ST25 Gia Đình 20kg">Gạo đặc biệt (đang triển khai)</option>
                             </select>
                           ) : (
                             <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
                               {reg.rice_type === 'ST25 Thơm 5kg' ? 'Gạo nguyên cám 100%' :
                                reg.rice_type === 'ST25 Cao Cấp 10kg' ? 'Gạo giữ cám 50%' :
                                reg.rice_type === 'ST25 Đặc Biệt 2kg' ? 'Gạo trắng tinh 0%' :
-                               reg.rice_type === 'ST25 Gia Đình 20kg' ? 'Gạo đặc biệt (đang triển khai)' :
                                reg.rice_type}
                             </span>
                           )}
@@ -621,7 +617,6 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                           {reg.rice_type === 'ST25 Thơm 5kg' ? 'Gạo nguyên cám 100%' :
                            reg.rice_type === 'ST25 Cao Cấp 10kg' ? 'Gạo giữ cám 50%' :
                            reg.rice_type === 'ST25 Đặc Biệt 2kg' ? 'Gạo trắng tinh 0%' :
-                           reg.rice_type === 'ST25 Gia Đình 20kg' ? 'Gạo đặc biệt (đang triển khai)' :
                            reg.rice_type}
                         </p>
                       </div>
