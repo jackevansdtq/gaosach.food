@@ -170,17 +170,20 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
                 <Package className="w-5 h-5 mr-2" />
                 Tiêu thụ hàng tháng (kg)
               </label>
-              <input
-                type="number"
+              <select
                 id="monthlyConsumption"
                 name="monthlyConsumption"
                 value={formData.monthlyConsumption}
                 onChange={handleChange}
                 required
-                min="1"
                 className="w-full px-4 py-3 border-2 border-green-200 rounded-lg focus:border-green-500 focus:outline-none transition-colors duration-300"
-                placeholder="Số kg gạo gia đình bạn sử dụng mỗi tháng"
-              />
+              >
+                <option value="">Chọn lượng tiêu thụ</option>
+                <option value="5-10kg (Gia đình nhỏ)">5-10kg (Gia đình nhỏ)</option>
+                <option value="10-20kg (Gia đình trung bình)">10-20kg (Gia đình trung bình)</option>
+                <option value="20-30kg (Gia đình đông người)">20-30kg (Gia đình đông người)</option>
+                <option value="Trên 30kg (Nhu cầu lớn)">Trên 30kg (Nhu cầu lớn)</option>
+              </select>
             </div>
 
             <div>
