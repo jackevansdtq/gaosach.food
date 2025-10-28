@@ -63,7 +63,7 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>(({ isVisible }, re
             
             {/* Description */}
             <p className="text-xl sm:text-2xl text-white mb-12 font-medium">
-              Farm to Table - Hương vị thuần khiết từ đồng ruộng
+              Gạo Sạch - Hương vị thuần khiết từ đồng ruộng
             </p>
             
             {/* CTA Button Sunset Orange */}
