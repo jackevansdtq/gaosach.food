@@ -90,15 +90,6 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
     }
   };
 
-  const stats = {
-    total: registrations.length,
-    thisMonth: registrations.filter(
-      (r) => new Date(r.created_at).getMonth() === new Date().getMonth()
-    ).length,
-    totalConsumption: registrations.reduce((sum, r) => sum + parseInt(r.monthly_consumption || '0'), 0),
-    totalSupport: registrations.filter((r) => r.project_support && r.project_support.trim() !== '').length,
-  };
-
   const currencyFormatter = new Intl.NumberFormat('vi-VN', {
     style: 'currency',
     currency: 'VND',
@@ -160,27 +151,96 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
     { key: 'other', label: 'Khác / chưa xác định' },
   ];
 
-  const consumptionAnalytics = consumptionBuckets
-    .map((bucket) => {
-      const bucketRegistrations = registrations.filter(
-        (reg) => determineConsumptionBucket(reg.monthly_consumption) === bucket.key
-      );
-      const supportValue = bucketRegistrations.reduce(
-        (sum, reg) => sum + parseSupportValue(reg.project_support),
-        0
-      );
-      const consumptionValue = bucketRegistrations.reduce(
-        (sum, reg) => sum + parseConsumptionValue(reg.monthly_consumption),
-        0
-      );
-      return {
-        ...bucket,
-        count: bucketRegistrations.length,
-        supportValue,
-        consumptionValue,
-      };
-    })
-    .filter((bucket) => bucket.count > 0 || bucket.supportValue > 0);
+  const riceTypeOptions = [
+    { db: 'ST25 Thơm 5kg', label: 'Gạo nguyên cám 100%' },
+    { db: 'ST25 Cao Cấp 10kg', label: 'Gạo giữ cám 50%' },
+    { db: 'ST25 Đặc Biệt 2kg', label: 'Gạo trắng tinh 0%' },
+  ];
+
+  const getConsumptionAnalytics = (records: Registration[]) =>
+    consumptionBuckets
+      .map((bucket) => {
+        const bucketRegistrations = records.filter(
+          (reg) => determineConsumptionBucket(reg.monthly_consumption) === bucket.key
+        );
+        const supportValue = bucketRegistrations.reduce(
+          (sum, reg) => sum + parseSupportValue(reg.project_support),
+          0
+        );
+        const consumptionValue = bucketRegistrations.reduce(
+          (sum, reg) => sum + parseConsumptionValue(reg.monthly_consumption),
+          0
+        );
+        return {
+          ...bucket,
+          count: bucketRegistrations.length,
+          supportValue,
+          consumptionValue,
+        };
+      })
+      .filter((bucket) => bucket.count > 0 || bucket.supportValue > 0);
+
+  const getRiceTypeDistribution = (records: Registration[]) =>
+    riceTypeOptions
+      .map((option) => {
+        const count = records.filter((reg) => reg.rice_type === option.db).length;
+        return {
+          ...option,
+          count,
+        };
+      })
+      .filter((item) => item.count > 0);
+
+  const getDailyTrend = (records: Registration[]) => {
+    const trendMap = new Map<string, { key: string; label: string; value: number; date: Date }>();
+
+    records.forEach((reg) => {
+      const date = new Date(reg.created_at);
+      const key = date.toISOString().split('T')[0];
+      const label = date.toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+      });
+
+      if (!trendMap.has(key)) {
+        trendMap.set(key, { key, label, value: 0, date });
+      }
+
+      const entry = trendMap.get(key);
+      if (entry) entry.value += 1;
+    });
+
+    return Array.from(trendMap.values()).sort((a, b) => a.date.getTime() - b.date.getTime());
+  };
+
+  const getSupportSummary = (records: Registration[]) => {
+    const supporters = records
+      .map((reg) => ({
+        name: reg.name,
+        value: parseSupportValue(reg.project_support),
+        display: reg.project_support,
+      }))
+      .filter((item) => item.value > 0)
+      .sort((a, b) => b.value - a.value);
+
+    const total = supporters.reduce((sum, item) => sum + item.value, 0);
+
+    return {
+      total,
+      supporters,
+    };
+  };
+
+  const stats = {
+    total: registrations.length,
+    thisMonth: registrations.filter(
+      (r) => new Date(r.created_at).getMonth() === new Date().getMonth()
+    ).length,
+    totalConsumption: registrations.reduce((sum, r) => sum + parseConsumptionValue(r.monthly_consumption), 0),
+    totalSupport: registrations.filter((r) => r.project_support && r.project_support.trim() !== '').length,
+  };
+
+  const consumptionAnalytics = getConsumptionAnalytics(registrations);
 
   const totalSupportAmount = consumptionAnalytics.reduce(
     (sum, bucket) => sum + bucket.supportValue,
@@ -417,7 +477,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                   </div>
                 </div>
                 <p className="text-purple-100 text-sm font-medium mb-2">Tổng tiêu thụ</p>
-                <p className="text-5xl font-black text-white mb-2">{stats.totalConsumption}</p>
+                <p className="text-5xl font-black text-white mb-2">{formatNumber(stats.totalConsumption)}</p>
                 <div className="flex items-center gap-2 text-purple-100">
                   <Package className="w-4 h-4" />
                   <span className="text-sm font-semibold">Kilogram</span>
@@ -453,11 +513,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                   <h3 className="text-2xl font-bold text-gray-900">Phân loại sản phẩm</h3>
                 </div>
                 <div className="space-y-4">
-                  {[
-                    { db: 'ST25 Thơm 5kg', label: 'Gạo nguyên cám 100%' },
-                    { db: 'ST25 Cao Cấp 10kg', label: 'Gạo giữ cám 50%' },
-                    { db: 'ST25 Đặc Biệt 2kg', label: 'Gạo trắng tinh 0%' },
-                  ].map(({ db, label }) => {
+                  {riceTypeOptions.map(({ db, label }) => {
                     const count = getRiceTypeCount(db);
                     const percentage = stats.total > 0 ? (count / stats.total) * 100 : 0;
                     return (
@@ -735,84 +791,233 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       </div>
 
       {/* Detail View Modal with Glass Morphism */}
-      {detailView && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
-          <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-white/20">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">
-                {detailView.type === 'total' && 'Chi tiết tất cả đơn hàng'}
-                {detailView.type === 'month' && 'Đơn hàng tháng này'}
-                {detailView.type === 'consumption' && 'Đơn hàng theo tiêu thụ'}
-                {detailView.type === 'support' && 'Đơn hàng có đóng góp'}
-              </h3>
-              <button
-                onClick={() => setDetailView(null)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <X className="w-6 h-6 text-gray-600" />
-              </button>
-            </div>
+      {detailView && (() => {
+        const detailRegistrations = registrations.filter(detailView.filter);
+        const detailDistribution = getRiceTypeDistribution(detailRegistrations);
+        const detailConsumption = getConsumptionAnalytics(detailRegistrations);
+        const detailDailyTrend = getDailyTrend(detailRegistrations);
+        const detailSupport = getSupportSummary(detailRegistrations);
 
-            <div className="flex-1 overflow-y-auto">
-              <div className="space-y-4">
-                {registrations.filter(detailView.filter).map((reg) => (
-                  <div key={reg.id} className="bg-gradient-to-r from-green-50 via-emerald-50 to-cyan-50 rounded-2xl p-6 border-2 border-green-200 hover:border-green-400 hover:shadow-xl transition-all duration-300">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-gray-600 mb-1">Họ tên</p>
-                        <p className="font-semibold text-gray-900">{reg.name}</p>
+        const renderDetailSummary = () => {
+          if (detailView.type === 'total') {
+            if (detailDistribution.length === 0) return null;
+            const maxCount = Math.max(...detailDistribution.map((item) => item.count), 1);
+            return (
+              <div className="bg-gradient-to-br from-green-50 via-white to-emerald-50 border border-green-200 rounded-2xl shadow-lg p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-lg font-bold text-gray-900">Phân bổ theo sản phẩm</h4>
+                  <span className="text-sm text-gray-500">{detailRegistrations.length} đơn hàng</span>
+                </div>
+                <div className="space-y-3">
+                  {detailDistribution.map((item) => (
+                    <div key={item.db}>
+                      <div className="flex justify-between items-center text-sm font-medium text-slate-700 mb-1">
+                        <span>{item.label}</span>
+                        <span className="text-slate-500">{item.count}</span>
                       </div>
-                      <div>
-                        <p className="text-sm text-gray-600 mb-1">SĐT</p>
-                        <p className="font-semibold text-gray-900">{reg.contact}</p>
-                      </div>
-                      <div className="col-span-2">
-                        <p className="text-sm text-gray-600 mb-1">Địa chỉ</p>
-                        <p className="font-semibold text-gray-900">{reg.address}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-600 mb-1">Sản phẩm</p>
-                        <p className="font-semibold text-green-700">
-                          {reg.rice_type === 'ST25 Thơm 5kg' ? 'Gạo nguyên cám 100%' :
-                           reg.rice_type === 'ST25 Cao Cấp 10kg' ? 'Gạo giữ cám 50%' :
-                           reg.rice_type === 'ST25 Đặc Biệt 2kg' ? 'Gạo trắng tinh 0%' :
-                           reg.rice_type}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-600 mb-1">Tiêu thụ</p>
-                        <p className="font-semibold text-blue-700">{reg.monthly_consumption} kg/tháng</p>
-                      </div>
-                      {reg.project_support && (
-                        <div className="col-span-2">
-                          <p className="text-sm text-gray-600 mb-1">Đóng góp</p>
-                          <p className="font-semibold text-amber-700">{reg.project_support}</p>
-                        </div>
-                      )}
-                      <div className="col-span-2">
-                        <p className="text-sm text-gray-600 mb-1">Ngày đăng ký</p>
-                        <p className="text-sm text-gray-700">{new Date(reg.created_at).toLocaleString('vi-VN')}</p>
+                      <div className="h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-emerald-500 via-lime-400 to-green-400"
+                          style={{ width: `${Math.max(8, (item.count / maxCount) * 100)}%` }}
+                        />
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              </div>
+            );
+          }
+
+          if (detailView.type === 'month') {
+            if (detailDailyTrend.length === 0) return null;
+            const maxDaily = Math.max(...detailDailyTrend.map((item) => item.value), 1);
+            return (
+              <div className="bg-gradient-to-br from-blue-50 via-white to-cyan-50 border border-blue-200 rounded-2xl shadow-lg p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-lg font-bold text-gray-900">Xu hướng đơn hàng theo ngày</h4>
+                  <span className="text-sm text-gray-500">{detailDailyTrend.length} ngày ghi nhận</span>
+                </div>
+                <div className="space-y-3">
+                  {detailDailyTrend.map((item) => (
+                    <div key={item.key}>
+                      <div className="flex justify-between items-center text-sm font-medium text-slate-700 mb-1">
+                        <span>{item.label}</span>
+                        <span className="text-slate-500">{item.value}</span>
+                      </div>
+                      <div className="h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-sky-300"
+                          style={{ width: `${Math.max(8, (item.value / maxDaily) * 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+
+          if (detailView.type === 'consumption') {
+            if (detailConsumption.length === 0) return null;
+            const maxSupport = detailConsumption.reduce((max, bucket) => Math.max(max, bucket.supportValue), 0);
+            const maxCount = detailConsumption.reduce((max, bucket) => Math.max(max, bucket.count), 0);
+            return (
+              <div className="bg-gradient-to-br from-purple-50 via-white to-pink-50 border border-purple-200 rounded-2xl shadow-lg p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-lg font-bold text-gray-900">Chi tiết tiêu thụ &amp; đóng góp</h4>
+                  <span className="text-sm text-gray-500">Tổng {detailConsumption.reduce((sum, b) => sum + b.count, 0)} đăng ký</span>
+                </div>
+                <div className="space-y-4">
+                  {detailConsumption.map((bucket) => {
+                    const combinedRatio = Math.max(
+                      bucket.supportValue && maxSupport > 0 ? bucket.supportValue / maxSupport : 0,
+                      bucket.count && maxCount > 0 ? bucket.count / maxCount : 0
+                    );
+                    return (
+                      <div key={bucket.key} className="p-4 bg-white/80 rounded-2xl border border-purple-100">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+                          <div>
+                            <p className="font-semibold text-slate-900">{bucket.label}</p>
+                            <p className="text-xs text-slate-500 uppercase tracking-wide">{bucket.count} đăng ký</p>
+                          </div>
+                          <div className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-semibold">
+                            {bucket.supportValue > 0 ? formatCurrency(bucket.supportValue) : '0 VND'}
+                          </div>
+                        </div>
+                        <div className="h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-pink-400"
+                            style={{ width: `${Math.max(8, combinedRatio * 100)}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          }
+
+          if (detailView.type === 'support') {
+            if (detailSupport.supporters.length === 0) return null;
+            return (
+              <div className="bg-gradient-to-br from-amber-50 via-white to-orange-50 border border-amber-200 rounded-2xl shadow-lg p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-lg font-bold text-gray-900">Tổng hợp đóng góp</h4>
+                  <span className="text-sm text-amber-600 font-semibold">
+                    {detailSupport.total > 0 ? formatCurrency(detailSupport.total) : '0 VND'}
+                  </span>
+                </div>
+                <div className="space-y-3">
+                  {detailSupport.supporters.slice(0, 6).map((supporter, index) => (
+                    <div key={`${supporter.name}-${index}`} className="flex items-center justify-between bg-white/80 rounded-2xl border border-amber-100 px-4 py-2.5">
+                      <div className="flex items-center gap-3">
+                        <span className="w-7 h-7 rounded-full bg-amber-200 text-amber-700 font-bold flex items-center justify-center text-xs">
+                          {index + 1}
+                        </span>
+                        <div>
+                          <p className="text-sm font-semibold text-slate-900">{supporter.name}</p>
+                          <p className="text-xs text-slate-500">{supporter.display}</p>
+                        </div>
+                      </div>
+                      <span className="text-sm font-bold text-amber-600">
+                        {formatCurrency(supporter.value)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+
+          return null;
+        };
+
+        return (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
+            <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-white/20">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold text-gray-900">
+                  {detailView.type === 'total' && 'Chi tiết tất cả đơn hàng'}
+                  {detailView.type === 'month' && 'Đơn hàng tháng này'}
+                  {detailView.type === 'consumption' && 'Đơn hàng theo tiêu thụ'}
+                  {detailView.type === 'support' && 'Đơn hàng có đóng góp'}
+                </h3>
+                <button
+                  onClick={() => setDetailView(null)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X className="w-6 h-6 text-gray-600" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto">
+                <div className="space-y-4">
+                  {renderDetailSummary()}
+                  {detailRegistrations.map((reg) => (
+                    <div key={reg.id} className="bg-gradient-to-r from-green-50 via-emerald-50 to-cyan-50 rounded-2xl p-6 border-2 border-green-200 hover:border-green-400 hover:shadow-xl transition-all duration-300">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-gray-600 mb-1">Họ tên</p>
+                          <p className="font-semibold text-gray-900">{reg.name}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600 mb-1">SĐT</p>
+                          <p className="font-semibold text-gray-900">{reg.contact}</p>
+                        </div>
+                        <div className="col-span-2">
+                          <p className="text-sm text-gray-600 mb-1">Địa chỉ</p>
+                          <p className="font-semibold text-gray-900">{reg.address}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600 mb-1">Sản phẩm</p>
+                          <p className="font-semibold text-green-700">
+                            {reg.rice_type === 'ST25 Thơm 5kg' ? 'Gạo nguyên cám 100%' :
+                             reg.rice_type === 'ST25 Cao Cấp 10kg' ? 'Gạo giữ cám 50%' :
+                             reg.rice_type === 'ST25 Đặc Biệt 2kg' ? 'Gạo trắng tinh 0%' :
+                             reg.rice_type}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600 mb-1">Tiêu thụ</p>
+                          <p className="font-semibold text-blue-700">{reg.monthly_consumption} kg/tháng</p>
+                        </div>
+                        {reg.project_support && (
+                          <div className="col-span-2">
+                            <p className="text-sm text-gray-600 mb-1">Đóng góp</p>
+                            <p className="font-semibold text-amber-700">{reg.project_support}</p>
+                          </div>
+                        )}
+                        <div className="col-span-2">
+                          <p className="text-sm text-gray-600 mb-1">Ngày đăng ký</p>
+                          <p className="text-sm text-gray-700">{new Date(reg.created_at).toLocaleString('vi-VN')}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {detailRegistrations.length === 0 && (
+                    <div className="py-12 text-center text-gray-500 bg-white/70 rounded-2xl border border-dashed border-emerald-200">
+                      Chưa có dữ liệu phù hợp.
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-between items-center pt-6 border-t">
+                <p className="text-gray-600">
+                  Tổng số: <span className="font-bold text-gray-900">{detailRegistrations.length}</span>
+                </p>
+                <button
+                  onClick={() => setDetailView(null)}
+                  className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                  Đóng
+                </button>
               </div>
             </div>
-
-            <div className="mt-6 flex justify-between items-center pt-6 border-t">
-              <p className="text-gray-600">
-                Tổng số: <span className="font-bold text-gray-900">{registrations.filter(detailView.filter).length}</span>
-              </p>
-              <button
-                onClick={() => setDetailView(null)}
-                className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-              >
-                Đóng
-              </button>
-            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Modern Delete Confirmation Modal */}
       {showDeleteConfirm && (
