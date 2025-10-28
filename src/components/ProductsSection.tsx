@@ -165,21 +165,6 @@ const ProductsSection = forwardRef<HTMLElement, ProductsSectionProps>(({ isVisib
           ))}
         </div>
 
-        <div
-          className={`mt-16 text-center transition-all duration-1000 delay-700 ${
-            isVisible ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <p className="text-gray-700 text-lg mb-6">
-            Giao hàng miễn phí cho đơn hàng từ 100kg trở lên
-          </p>
-          <button
-            onClick={scrollToForm}
-            className="inline-block px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-full font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-          >
-            Đặt hàng ngay
-          </button>
-        </div>
       </div>
     </section>
   );
