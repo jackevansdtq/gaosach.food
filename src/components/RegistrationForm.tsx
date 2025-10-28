@@ -188,15 +188,18 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
                 <DollarSign className="w-5 h-5 mr-2" />
                 Đóng góp dự án (tùy chọn)
               </label>
-              <input
-                type="text"
+              <select
                 id="projectSupport"
                 name="projectSupport"
                 value={formData.projectSupport}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border-2 border-green-200 rounded-lg focus:border-green-500 focus:outline-none transition-colors duration-300"
-                placeholder="Số tiền bạn muốn đóng góp cho dự án"
-              />
+              >
+                <option value="">Chọn mức đóng góp (không bắt buộc)</option>
+                <option value="5.000.000 VND">5.000.000 VND</option>
+                <option value="10.000.000 VND">10.000.000 VND</option>
+                <option value="20.000.000 VND">20.000.000 VND</option>
+              </select>
               <p className="text-sm text-gray-600 mt-2">
                 Chúng tôi rất biết ơn sự đóng góp của bạn!
               </p>
