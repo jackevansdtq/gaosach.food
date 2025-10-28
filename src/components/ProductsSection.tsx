@@ -25,7 +25,7 @@ const products = [
   },
   {
     name: 'Trắng Tinh',
-    percentage: 30,
+    percentage: 0,
     description: 'Xay trắng hoàn toàn, hạt gạo trắng tinh, mềm dẻo. Hương thơm đặc trưng của ST25, phù hợp mọi lứa tuổi.',
     color: 'blue',
     image: gaoSt25,
@@ -43,17 +43,15 @@ const ProductsSection = forwardRef<HTMLElement, ProductsSectionProps>(({ isVisib
     }
   };
 
-  const getProgressColor = (percentage: number) => {
-    if (percentage === 100) return 'bg-green-500';
-    if (percentage === 50) return 'bg-amber-500';
-    if (percentage === 0) return 'bg-gray-300';
-    return 'bg-blue-500';
+  const getProgressClasses = (percentage: number) => {
+    if (percentage === 0) return 'bg-slate-300';
+    return 'bg-gradient-to-r from-orange-500 via-orange-400 to-orange-300';
   };
 
-  const getBadgeColor = (percentage: number) => {
-    if (percentage === 100) return 'bg-green-600';
-    if (percentage === 50) return 'bg-amber-600';
-    return 'bg-blue-600';
+  const getBadgeClasses = (percentage: number) => {
+    if (percentage === 100) return 'bg-emerald-100 text-emerald-700';
+    if (percentage === 50) return 'bg-orange-100 text-orange-700';
+    return 'bg-blue-100 text-blue-700';
   };
 
   return (
@@ -101,17 +99,17 @@ const ProductsSection = forwardRef<HTMLElement, ProductsSectionProps>(({ isVisib
 
               <div className="p-6">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-2xl font-bold text-green-900">{product.name}</h3>
-                  <span className={`px-3 py-1 rounded-full text-white text-sm font-semibold ${getBadgeColor(product.percentage)}`}>
+                  <h3 className="text-2xl font-bold text-slate-900">{product.name}</h3>
+                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getBadgeClasses(product.percentage)}`}>
                     {product.percentage}%
                   </span>
                 </div>
 
                 {/* Progress Bar */}
                 <div className="mb-4">
-                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-2.5 bg-slate-200 rounded-full overflow-hidden">
                     <div
-                      className={`h-full ${getProgressColor(product.percentage)} transition-all duration-500`}
+                      className={`h-full ${getProgressClasses(product.percentage)} transition-all duration-500`}
                       style={{ width: `${product.percentage}%` }}
                     />
                   </div>
