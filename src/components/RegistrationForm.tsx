@@ -11,7 +11,7 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
     name: '',
     contact: '',
     address: '',
-    riceType: 'ST25 Thơm 5kg',
+    riceType: '',
     monthlyConsumption: '',
     projectSupport: '',
   });
@@ -53,7 +53,7 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
         name: '',
         contact: '',
         address: '',
-        riceType: 'ST25 Thơm 5kg',
+        riceType: '',
         monthlyConsumption: '',
         projectSupport: '',
       });
@@ -156,11 +156,14 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
                 value={formData.riceType}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-[0_6px_18px_rgba(15,23,42,0.05)] focus:border-green-500 focus:outline-none focus:ring-4 focus:ring-green-100 transition-all duration-300 appearance-none"
+                className={`w-full px-4 py-3 rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-[0_6px_18px_rgba(15,23,42,0.05)] focus:border-green-500 focus:outline-none focus:ring-4 focus:ring-green-100 transition-all duration-300 appearance-none ${formData.riceType === '' ? 'text-slate-400' : 'text-slate-700'}`}
               >
+                <option value="" disabled hidden>
+                  Chọn loại gạo
+                </option>
                 <option value="ST25 Thơm 5kg">Gạo nguyên cám 100%</option>
                 <option value="ST25 Cao Cấp 10kg">Gạo giữ cám 50%</option>
-                <option value="ST25 Đặc Biệt 2kg">Gạo trắng tinh 30%</option>
+                <option value="ST25 Đặc Biệt 2kg">Gạo trắng tinh 0%</option>
               </select>
             </div>
 
