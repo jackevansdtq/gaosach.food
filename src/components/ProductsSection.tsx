@@ -25,7 +25,7 @@ const products = [
   },
   {
     name: 'Trắng Tinh',
-    percentage: 0,
+    percentage: 30,
     description: 'Xay trắng hoàn toàn, hạt gạo trắng tinh, mềm dẻo. Hương thơm đặc trưng của ST25, phù hợp mọi lứa tuổi.',
     color: 'blue',
     image: gaoSt25,
