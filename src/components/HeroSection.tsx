@@ -39,7 +39,7 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>(({ isVisible }, re
           </div>
           <div>
             <h3 className="text-2xl font-black text-white">Gạo ST25</h3>
-            <p className="text-sm text-white/90">Farm2Table</p>
+            <p className="text-sm text-white/90">Gạo Sạch</p>
           </div>
         </div>
 
