@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HeroSection from './components/HeroSection';
-import StorySection from './components/StorySection';
 import ProductsSection from './components/ProductsSection';
 import ReasonsSection from './components/ReasonsSection';
 import RegistrationForm from './components/RegistrationForm';
@@ -39,7 +38,6 @@ function HomePage() {
   return (
     <div className="min-h-screen bg-white">
       <HeroSection ref={setSectionRef('hero')} isVisible={isVisible['hero']} />
-      <StorySection ref={setSectionRef('story')} isVisible={isVisible['story']} />
       <ProductsSection ref={setSectionRef('products')} isVisible={isVisible['products']} />
       <ReasonsSection ref={setSectionRef('reasons')} isVisible={isVisible['reasons']} />
       <RegistrationForm ref={setSectionRef('form')} isVisible={isVisible['form']} />

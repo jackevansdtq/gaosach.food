@@ -9,3 +9,96 @@ html {
 body {
   overflow-x: hidden;
 }
+
+/* Custom colors inspired by rice field sunrise/sunset */
+:root {
+  --rice-field-green: #7cb342;
+  --rice-field-light-green: #aed581;
+  --sunset-orange: #ff8f00;
+  --sunset-gold: #ffc107;
+  --sunset-pink: #ff7043;
+  --sky-blue: #81d4fa;
+  --earth-brown: #8d6e63;
+  --water-blue: #4fc3f7;
+}
+
+/* Gradient backgrounds matching the image */
+.bg-rice-field {
+  background: linear-gradient(135deg, var(--rice-field-green) 0%, var(--rice-field-light-green) 100%);
+}
+
+.bg-sunset-sky {
+  background: linear-gradient(135deg, var(--sky-blue) 0%, var(--sunset-orange) 50%, var(--sunset-pink) 100%);
+}
+
+.bg-sunset-gold {
+  background: linear-gradient(135deg, var(--sunset-gold) 0%, var(--sunset-orange) 100%);
+}
+
+/* Text colors matching the image */
+.text-rice-green {
+  color: var(--rice-field-green);
+}
+
+.text-sunset-orange {
+  color: var(--sunset-orange);
+}
+
+.text-sunset-gold {
+  color: var(--sunset-gold);
+}
+
+/* Custom animations */
+@keyframes sunrise-glow {
+  0% { box-shadow: 0 0 20px rgba(255, 193, 7, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(255, 143, 0, 0.6); }
+  100% { box-shadow: 0 0 20px rgba(255, 193, 7, 0.3); }
+}
+
+.sunrise-glow {
+  animation: sunrise-glow 3s ease-in-out infinite;
+}
+
+/* Custom button styles */
+.btn-sunset {
+  background: linear-gradient(135deg, var(--sunset-orange) 0%, var(--sunset-gold) 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 143, 0, 0.4);
+}
+
+.btn-sunset:hover {
+  background: linear-gradient(135deg, #e65100 0%, #f57f17 100%);
+  box-shadow: 0 6px 20px rgba(255, 143, 0, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Card styles with rice field theme */
+.card-rice-field {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid var(--rice-field-green);
+  box-shadow: 0 8px 32px rgba(124, 179, 66, 0.2);
+}
+
+.card-sunset {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 143, 0, 0.1) 100%);
+  border: 2px solid var(--sunset-orange);
+  box-shadow: 0 8px 32px rgba(255, 143, 0, 0.2);
+}
+
+/* Smooth parallax effect */
+.parallax-content {
+  will-change: transform;
+  transform: translateZ(0);
+  transition: transform 0.1s ease-out;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Optimize for smooth animations */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

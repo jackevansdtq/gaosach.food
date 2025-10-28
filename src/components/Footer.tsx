@@ -1,108 +1,119 @@
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Instagram, Youtube, Sprout, Info } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-b from-green-900 to-green-950 text-white py-12 px-4 sm:px-6 lg:px-8">
+    <footer className="bg-gradient-to-b from-yellow-50 to-yellow-100 text-gray-800 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
+        <div className="grid md:grid-cols-3 gap-8 mb-8">
+          {/* Left Column: Gạo ST25 */}
           <div>
-            <h3 className="text-2xl font-bold mb-4">Gạo ST25</h3>
-            <p className="text-green-200 text-sm leading-relaxed">
-              Hạt gạo tinh hoa từ đồng ruộng Việt Nam, mang đến sự an toàn và chất lượng cho mọi gia đình.
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-rice-field rounded-full flex items-center justify-center shadow-lg">
+                <Sprout className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900">Gạo ST25</h3>
+                <p className="text-rice-field-green text-sm font-medium">Sóc Trăng</p>
+              </div>
+            </div>
+            <p className="text-gray-700 text-sm leading-relaxed mb-6">
+              Từ ruộng đến bàn ăn - Mang đến hương vị thuần khiết của đồng ruộng
             </p>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-lg mb-4">Liên kết</h4>
-            <ul className="space-y-2 text-green-200">
-              <li>
-                <a href="#hero" className="hover:text-white transition-colors duration-300">
-                  Trang chủ
-                </a>
-              </li>
-              <li>
-                <a href="#story" className="hover:text-white transition-colors duration-300">
-                  Câu chuyện
-                </a>
-              </li>
-              <li>
-                <a href="#products" className="hover:text-white transition-colors duration-300">
-                  Sản phẩm
-                </a>
-              </li>
-              <li>
-                <a href="#reasons" className="hover:text-white transition-colors duration-300">
-                  Tại sao chọn chúng tôi
-                </a>
-              </li>
-              <li>
-                <a href="#form" className="hover:text-white transition-colors duration-300">
-                  Đăng ký
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-lg mb-4">Liên hệ</h4>
-            <ul className="space-y-3 text-green-200">
-              <li className="flex items-start">
-                <Phone className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
-                <span>‭090 8992212‬</span>
-              </li>
-              <li className="flex items-start">
-                <Mail className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
-                <span>contact@gaost25.food</span>
-              </li>
-              <li className="flex items-start">
-                <MapPin className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
-                <span>Đồng Tháp, Việt Nam</span>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-lg mb-4">Theo dõi chúng tôi</h4>
-            <div className="flex space-x-4">
+            <div className="flex space-x-3">
               <a
                 href="#"
-                className="w-10 h-10 bg-green-800 rounded-full flex items-center justify-center hover:bg-green-700 transition-colors duration-300"
+                className="w-10 h-10 bg-rice-field rounded-full flex items-center justify-center hover:bg-rice-field-green transition-colors duration-300"
                 aria-label="Facebook"
               >
-                <Facebook className="w-5 h-5" />
+                <Facebook className="w-5 h-5 text-white" />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 bg-green-800 rounded-full flex items-center justify-center hover:bg-green-700 transition-colors duration-300"
-                aria-label="Twitter"
-              >
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-green-800 rounded-full flex items-center justify-center hover:bg-green-700 transition-colors duration-300"
+                className="w-10 h-10 bg-rice-field rounded-full flex items-center justify-center hover:bg-rice-field-green transition-colors duration-300"
                 aria-label="Instagram"
               >
-                <Instagram className="w-5 h-5" />
+                <Instagram className="w-5 h-5 text-white" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 bg-rice-field rounded-full flex items-center justify-center hover:bg-rice-field-green transition-colors duration-300"
+                aria-label="YouTube"
+              >
+                <Youtube className="w-5 h-5 text-white" />
               </a>
             </div>
-            <div className="mt-6">
-              <h5 className="font-semibold mb-2">Nhận tin tức</h5>
-              <div className="flex">
-                <input
-                  type="email"
-                  placeholder="Email của bạn"
-                  className="flex-1 px-3 py-2 rounded-l-lg text-green-900 focus:outline-none"
-                />
-                <button className="px-4 py-2 bg-green-600 rounded-r-lg hover:bg-green-700 transition-colors duration-300">
-                  <Mail className="w-5 h-5" />
-                </button>
+          </div>
+
+          {/* Middle Column: Thông Tin Liên Hệ */}
+          <div>
+            <h4 className="font-bold text-lg mb-4 text-gray-900">Thông Tin Liên Hệ</h4>
+            <ul className="space-y-3 text-gray-700">
+              <li className="flex items-start">
+                <MapPin className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5 text-rice-field-green" />
+                <div>
+                  <span className="font-medium">Địa chỉ:</span>
+                  <br />
+                  <span>Thứ 5, An Biên, An Giang</span>
+                </div>
+              </li>
+              <li className="flex items-start">
+                <Phone className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5 text-rice-field-green" />
+                <div>
+                  <span className="font-medium">Hotline:</span>
+                  <br />
+                  <span>0924 167 167</span>
+                </div>
+              </li>
+              <li className="flex items-start">
+                <Mail className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5 text-rice-field-green" />
+                <div>
+                  <span className="font-medium">Email:</span>
+                  <br />
+                  <span>info@farm2table.vn</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          {/* Right Column: Ghi Chú */}
+          <div>
+            <h4 className="font-bold text-lg mb-4 text-gray-900">Ghi Chú</h4>
+            
+            {/* Trial Period Notice */}
+            <div className="bg-orange-50 border-l-4 border-orange-400 p-4 mb-6 rounded-r-lg">
+              <div className="flex items-start">
+                <Info className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5 text-orange-500" />
+                <div>
+                  <p className="font-bold text-orange-600 mb-2">Giai đoạn thử nghiệm</p>
+                  <p className="text-orange-600 text-sm leading-relaxed">
+                    Chúng tôi đang trong giai đoạn thử nghiệm sản phẩm. Cảm ơn sự quan tâm và ủng hộ của quý khách hàng.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Methods */}
+            <div>
+              <p className="font-medium text-gray-700 mb-3">Phương thức thanh toán:</p>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-5 bg-blue-600 rounded flex items-center justify-center">
+                    <span className="text-white text-xs font-bold">VISA</span>
+                  </div>
+                  <span className="text-gray-700 text-sm">Visa</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-5 bg-blue-600 rounded flex items-center justify-center">
+                    <span className="text-white text-xs font-bold">PP</span>
+                  </div>
+                  <span className="text-gray-700 text-sm">PayPal</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-green-800 pt-8 text-center text-green-300">
+        <div className="border-t border-gray-300 pt-8 text-center text-gray-600">
           <p>&copy; 2025 Gạo ST25. Tất cả quyền được bảo lưu.</p>
           <p className="mt-2 text-sm">Được phát triển với tình yêu từ Việt Nam</p>
         </div>
