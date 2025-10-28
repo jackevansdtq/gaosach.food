@@ -13,7 +13,7 @@ export default function Footer() {
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-gray-900">Gạo ST25</h3>
-                <p className="text-rice-field-green text-sm font-medium">Sóc Trăng</p>
+                <p className="text-rice-field-green text-sm font-medium">Farm2Table</p>
               </div>
             </div>
             <p className="text-gray-700 text-sm leading-relaxed mb-6">
