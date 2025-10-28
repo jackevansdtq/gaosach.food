@@ -205,18 +205,15 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
               </div>
               <div className="relative">
                 <DollarSign className="w-5 h-5 text-orange-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
-                <select
+                <input
+                  type="text"
                   id="projectSupport"
                   name="projectSupport"
                   value={formData.projectSupport}
                   onChange={handleChange}
-                  className="w-full pl-12 pr-6 py-3 rounded-2xl border-2 border-[#f7c28d] bg-white text-slate-800 shadow-[0_6px_18px_rgba(249,115,22,0.12)] focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all duration-300 appearance-none"
-                >
-                  <option value="">Chọn mức hỗ trợ (không bắt buộc)</option>
-                  <option value="5.000.000 VND">5.000.000 VND</option>
-                  <option value="10.000.000 VND">10.000.000 VND</option>
-                  <option value="20.000.000 VND">20.000.000 VND</option>
-                </select>
+                  placeholder="Nhập mức hỗ trợ (không bắt buộc)"
+                  className="w-full pl-12 pr-6 py-3 rounded-2xl border-2 border-[#f7c28d] bg-white text-slate-800 shadow-[0_6px_18px_rgba(249,115,22,0.12)] focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all duration-300"
+                />
               </div>
             </div>
 
