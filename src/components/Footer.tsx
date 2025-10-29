@@ -1,4 +1,5 @@
-import { Mail, Phone, MapPin, Facebook, Instagram, Youtube, Sprout, Info } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Instagram, Youtube, Info } from 'lucide-react';
+import logoImage from '../assets/images/logogaosach.png';
 
 export default function Footer() {
   return (
@@ -8,8 +9,8 @@ export default function Footer() {
           {/* Left Column: Gạo ST25 */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-rice-field rounded-full flex items-center justify-center shadow-lg">
-                <Sprout className="w-7 h-7 text-white" />
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-white/90 flex items-center justify-center shadow-lg">
+                <img src={logoImage} alt="Gạo Sạch Logo" className="w-10 h-10 object-contain" />
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-gray-900">Gạo ST25</h3>

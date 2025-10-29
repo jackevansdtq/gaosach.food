@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
-import { Sprout } from 'lucide-react';
 import riceFieldImage from '../assets/images/5a40742ba105b393eb8bc595d8ac9cc7.jpg';
+import logoImage from '../assets/images/logogaosach.png';
 
 interface HeroSectionProps {
   isVisible?: boolean;
@@ -34,8 +34,12 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>(({ isVisible }, re
       <div className="relative z-10 w-full parallax-content">
         {/* Top Left Logo & Brand */}
         <div className="absolute top-8 left-8 flex items-center gap-3">
-          <div className="w-12 h-12 bg-rice-field rounded-full flex items-center justify-center shadow-lg sunrise-glow">
-            <Sprout className="w-7 h-7 text-white" />
+          <div className="w-14 h-14 rounded-full overflow-hidden bg-white/90 flex items-center justify-center shadow-lg sunrise-glow">
+            <img
+              src={logoImage}
+              alt="Gạo Sạch Logo"
+              className="w-12 h-12 object-contain"
+            />
           </div>
           <div>
             <h3 className="text-2xl font-black text-white">Gạo ST25</h3>
