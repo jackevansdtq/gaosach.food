@@ -84,7 +84,7 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-green-400 to-emerald-500 mx-auto mb-6"></div>
           <p className="text-xl text-gray-700">
-            Điền thông tin để chúng tôi có thể phục vụ bạn tốt nhất
+            Đây chỉ là thông tin khảo sát về nhu cầu và số tiền khách hàng có thể đóng góp để hỗ trợ triển khai cho dự án. Chúng tôi sẽ liên hệ trực tiếp cho quý khách nếu dự án được triển khai (Khi nhận đủ số lượng đăng ký và đóng góp)
           </p>
         </div>
 
@@ -124,7 +124,7 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-white text-slate-700 placeholder:text-slate-400 shadow-[0_6px_18px_rgba(15,23,42,0.05)] focus:border-green-500 focus:outline-none focus:ring-4 focus:ring-green-100 transition-all duration-300"
-                placeholder="example@email.com hoặc 0901234567"
+                placeholder="example@email.com hoặc 0924167167"
               />
             </div>
 
@@ -199,7 +199,7 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
                   </p>
                   <p className="flex items-center text-sm text-orange-600 mt-1 gap-2">
                     <Heart className="w-4 h-4 text-orange-400" />
-                    Chúng tôi rất trân trọng sự đồng hành để triển khai dự án.
+                    Số tiền hỗ trợ này sẽ được chúng tôi hoàn trả lại bằng số gạo tương ứng khi dự án được triển khai
                   </p>
                 </div>
               </div>
@@ -251,7 +251,7 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
               Thông tin của bạn được bảo mật tuyệt đối.
             </p>
             <p className="text-sm text-slate-500">
-              Cần hỗ trợ? <a href="tel:0908992212" className="text-green-600 font-semibold hover:text-green-700">Gọi ngay: 090 8992212</a>
+              Cần hỗ trợ? <a href="tel:0924167167" className="text-green-600 font-semibold hover:text-green-700">Gọi ngay: 0924167167</a>
             </p>
           </div>
         </div>

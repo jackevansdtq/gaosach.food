@@ -62,7 +62,7 @@ export default function Footer() {
                 <div>
                   <span className="font-medium">Hotline:</span>
                   <br />
-                  <span>0924 167 167</span>
+                  <span>0924167167</span>
                 </div>
               </li>
               <li className="flex items-start">
