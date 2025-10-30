@@ -15,6 +15,7 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
     monthlyConsumption: '',
     projectSupport: '',
   });
+  const [supportOption, setSupportOption] = useState('');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -23,10 +24,30 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleSupportSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setSupportOption(value);
+
+    if (value === 'custom') {
+      setFormData((prev) => ({ ...prev, projectSupport: '' }));
+    } else {
+      setFormData((prev) => ({ ...prev, projectSupport: value }));
+    }
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitMessage(null);
+
+    if (!formData.projectSupport.trim()) {
+      setSubmitMessage({
+        type: 'error',
+        text: 'Vui lòng chọn hoặc nhập mức hỗ trợ.',
+      });
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const { error } = await supabase
@@ -57,6 +78,7 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
         monthlyConsumption: '',
         projectSupport: '',
       });
+      setSupportOption('');
     } catch (error) {
       setSubmitMessage({
         type: 'error',
@@ -200,9 +222,28 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
                   <p className="flex items-center text-sm text-orange-600 mt-1 gap-2">
                     <Heart className="w-4 h-4 text-orange-400" />
                     Số tiền hỗ trợ này sẽ được chúng tôi hoàn trả lại bằng số gạo tương ứng khi dự án được triển khai
-                  </p>
-                </div>
-              </div>
+              </p>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="relative">
+              <DollarSign className="w-5 h-5 text-orange-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <select
+                id="projectSupportOption"
+                value={supportOption}
+                onChange={handleSupportSelect}
+                required
+                className="w-full pl-12 pr-6 py-3 rounded-2xl border-2 border-[#f7c28d] bg-white text-slate-800 shadow-[0_6px_18px_rgba(249,115,22,0.12)] focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all duration-300"
+              >
+                <option value="">Chọn mức hỗ trợ</option>
+                <option value="5 triệu">5 triệu</option>
+                <option value="10 triệu">10 triệu</option>
+                <option value="20 triệu">20 triệu</option>
+                <option value="custom">Chọn số tiền khác</option>
+              </select>
+            </div>
+
+            {supportOption === 'custom' && (
               <div className="relative">
                 <DollarSign className="w-5 h-5 text-orange-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
@@ -211,11 +252,14 @@ const RegistrationForm = forwardRef<HTMLElement, RegistrationFormProps>(({ isVis
                   name="projectSupport"
                   value={formData.projectSupport}
                   onChange={handleChange}
-                  placeholder="Nhập mức hỗ trợ (không bắt buộc)"
+                  placeholder="Nhập mức hỗ trợ khác"
+                  required
                   className="w-full pl-12 pr-6 py-3 rounded-2xl border-2 border-[#f7c28d] bg-white text-slate-800 shadow-[0_6px_18px_rgba(249,115,22,0.12)] focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all duration-300"
                 />
               </div>
-            </div>
+            )}
+          </div>
+        </div>
 
             {submitMessage && (
               <div
